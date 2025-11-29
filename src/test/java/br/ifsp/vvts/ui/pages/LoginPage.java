@@ -90,6 +90,16 @@ public class LoginPage {
         }
     }
 
+    public boolean isSubmitButtonEnabled() {
+        try {
+            WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(submitButton));
+            return element.getAttribute("disabled") == null;
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
+
     public LoginPage clearEmail() {
         driver.findElement(emailInput).clear();
         return this;
