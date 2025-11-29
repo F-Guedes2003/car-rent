@@ -47,14 +47,14 @@ public class RegisterPageTest {
                 .fillPassword(randomPassword)
                 .clickSubmit();
 
-        assertTrue(registerPage.isSnackBarVisible(), "Snackbar deveria estar visível");
+        assertTrue(registerPage.isSnackBarVisible(), "Snackbar should be visible");
 
         String snackMsg = registerPage.getSnackbarMessage();
         assertTrue(snackMsg.contains("Registro efetuado com sucesso! Faça o login."),
-                "Mensagem do snackbar incorreta!");
+                "Incorrect snackbar message!");
 
         assertTrue(driver.getCurrentUrl().contains("/login"),
-                "Usuário deveria ter sido redirecionado para /login");
+                "User should has been redirected to login page");
     }
 
     @Test
@@ -70,15 +70,29 @@ public class RegisterPageTest {
     @DisplayName("Incomplete form should provide disabled submit button")
     void checkingSubmitFormWithIncompleteForm() {
         registerPage.fillName("Cuca");
-        assertFalse(registerPage.isSubmitButtonClickable());
+        assertFalse(registerPage.isSubmitButtonClickable(),
+                "Button should be disabled when form is incomplete");
 
         registerPage.fillLastname("Beludo");
-        assertFalse(registerPage.isSubmitButtonClickable());
+        assertFalse(registerPage.isSubmitButtonClickable(),
+                "Button should be disabled when form is incomplete");
 
         registerPage.fillEmail("blob@gmail.com");
-        assertFalse(registerPage.isSubmitButtonClickable());
+        assertFalse(registerPage.isSubmitButtonClickable(),
+                "Button should be disabled when form is incomplete");
 
         registerPage.fillPassword("abcd123@");
-        assertTrue(registerPage.isSubmitButtonClickable());
+        assertTrue(registerPage.isSubmitButtonClickable(),
+                "Button should be disabled when form is incomplete");
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("Should redirect to login page when click the already has an account button")
+    void alreadyHasAccountButton() {
+        registerPage.clickEntreAqui();
+
+        assertTrue(driver.getCurrentUrl().contains("/login"),
+                "User should has been redirected to login page");
     }
 }

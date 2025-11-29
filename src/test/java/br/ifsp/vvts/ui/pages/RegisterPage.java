@@ -18,6 +18,7 @@ public class RegisterPage {
     private By emailInput = By.cssSelector("input[formControlName='email']");
     private By passwordInput = By.cssSelector("input[formControlName='password']");
     private By submitButton = By.cssSelector("button[type='submit']");
+    private By entreAquiButton = By.cssSelector("a[routerLink='/login']");
     private By snackbar = By.cssSelector("simple-snack-bar");
 
     public RegisterPage(WebDriver driver) {
@@ -84,6 +85,11 @@ public class RegisterPage {
 
     public RegisterPage clickSubmit() {
         driver.findElement(submitButton).click();
+        return this;
+    }
+
+    public RegisterPage clickEntreAqui() {
+        driver.findElement(entreAquiButton).click();
         return this;
     }
 
