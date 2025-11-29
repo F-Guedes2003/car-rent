@@ -1,4 +1,4 @@
-package br.ifsp.vvts.ui;
+package br.ifsp.vvts.ui.pages;
 
 import com.github.javafaker.Faker;
 import org.openqa.selenium.*;
@@ -18,7 +18,6 @@ public class RegisterPage {
     private By emailInput = By.cssSelector("input[formControlName='email']");
     private By passwordInput = By.cssSelector("input[formControlName='password']");
     private By submitButton = By.cssSelector("button[type='submit']");
-
     private By snackbar = By.cssSelector("simple-snack-bar");
 
     public RegisterPage(WebDriver driver) {
@@ -31,6 +30,8 @@ public class RegisterPage {
         wait.until(ExpectedConditions.visibilityOfElementLocated(nameInput));
         return this;
     }
+
+    // INSERIR VALORES
 
     public RegisterPage fillName(String name) {
         driver.findElement(nameInput).clear();
@@ -56,15 +57,37 @@ public class RegisterPage {
         return this;
     }
 
-    public RegisterPage clickSubmit() {
-        driver.findElement(submitButton).click();
-        return this;
+    //  OBTER VALORES
+
+    public String getNameValue() {
+        return driver.findElement(nameInput).getAttribute("value");
+    }
+
+    public String getLastnameValue() {
+        return driver.findElement(lastnameInput).getAttribute("value");
+    }
+
+    public String getEmailValue() {
+        return driver.findElement(emailInput).getAttribute("value");
+    }
+
+    public String getPasswordValue() {
+        return driver.findElement(passwordInput).getAttribute("value");
     }
 
     public String getSnackbarMessage() {
         WebElement bar = wait.until(ExpectedConditions.visibilityOfElementLocated(snackbar));
         return bar.getText();
     }
+
+    // MÉTODOS DE INTERAÇÃO
+
+    public RegisterPage clickSubmit() {
+        driver.findElement(submitButton).click();
+        return this;
+    }
+
+    // MÉTODOS DE CHECKAGEM
 
     public boolean isSnackBarVisible() {
         try {
@@ -73,5 +96,11 @@ public class RegisterPage {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public boolean isSubmitButtonClickable() {
+        WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(submitButton));
+
+        return button.getAttribute("disabled") == null;
     }
 }
