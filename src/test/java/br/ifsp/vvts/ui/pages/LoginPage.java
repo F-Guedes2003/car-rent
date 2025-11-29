@@ -46,6 +46,14 @@ public class LoginPage {
         return this;
     }
 
+    public String getEmailValue() {
+        return driver.findElement(emailInput).getAttribute("value");
+    }
+
+    public String getPasswordValue() {
+        return driver.findElement(passwordInput).getAttribute("value");
+    }
+
     public LoginPage clickSubmit() {
         driver.findElement(submitButton).click();
         return this;
