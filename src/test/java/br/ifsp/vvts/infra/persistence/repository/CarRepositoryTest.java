@@ -13,11 +13,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.orm.jpa.JpaSystemException;
 
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
@@ -71,4 +73,31 @@ class CarRepositoryTest {
 
         assertTrue(queryResult.isEmpty());
     }
+
+    @Test
+    @DisplayName("Should not allow creating two cars with the same license plate")
+    public void shouldNotAllowDuplicatedLicensePlate() {
+        var plate = LicensePlate.of("ABC1234");
+
+        var car1 = new Car(
+                plate,
+                "Chevrolet",
+                "Chevette",
+                300
+        );
+        repository.save(carMapper.toEntity(car1));
+
+        var car2 = new Car(
+                plate,
+                "Toyota",
+                "Corolla",
+                250
+        );
+        var entity2 = carMapper.toEntity(car2);
+
+        assertThrows(JpaSystemException.class, () -> {
+            repository.saveAndFlush(entity2);
+        });
+    }
+
 }
