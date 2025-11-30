@@ -53,7 +53,7 @@ class CarRepositoryTest {
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("Should return an empty optional if the car does not exists on database")
     public void shouldReturnEmptyIfThereIsNoCarWithTheProvidedLicensePlate() {
         LicensePlate licensePlate = LicensePlate.of("ABC1234");
 
