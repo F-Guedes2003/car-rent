@@ -37,15 +37,15 @@ class CustomerRepositoryTest {
     }
 
     @Test
-    @DisplayName("Should return the car with provided license plate when it is present")
-    public void shouldReturnCarWithTheProvidedLicensePlate() {
-        var cpf = CPF.of("ABC1234");
+    @DisplayName("Should return the customer of the provided CPF when it is present")
+    public void shouldReturnCustomerWithTheProvidedCpf() {
+        var cpf = CPF.of("12345678909");
 
         var customer = new Customer("Gustavo Gomes", cpf);
         var customerEntity = customerMapper.toEntity(customer);
 
         repository.save(customerEntity);
-        var queryResult = repository.findByCpfNumber(cpf.toString());
+        var queryResult = repository.findByCpfNumber(cpf.unformat());
 
         assertThat(queryResult.get()).isEqualTo(customerEntity);
     }
