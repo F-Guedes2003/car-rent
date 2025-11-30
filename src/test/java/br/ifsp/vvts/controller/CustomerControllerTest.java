@@ -256,4 +256,31 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(401);
     }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 409 if user tries to register a customer that already is registered")
+    void shouldReturn409IfUserTriesToRegisterCustomerThatAlreadyIsRegistered(){
+
+        var request = new CreateCustomerRequest("Aislan","51430203609");
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(request).post("/api/v1/customers");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .post("/api/v1/cars");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .when().post("/api/v1/customers")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(409);
+    }
 }
