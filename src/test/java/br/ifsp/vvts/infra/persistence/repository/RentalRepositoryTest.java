@@ -98,4 +98,27 @@ class RentalRepositoryTest {
 
         assertThat(result).isTrue();
     }
+
+    @Test
+    @DisplayName("different license plate should return false(the rest of the conditions is right)")
+    void LicensePlateIsNotPresent() {
+
+        var customer = createCustomer();
+        var car = createCar("ABC1234");
+
+        createRental(car, customer,
+                LocalDate.of(2024, 1, 10),
+                LocalDate.of(2024, 1, 20),
+                RentalStatus.ACTIVE);
+
+        boolean result = rentalRepository
+                .existsByCarLicensePlateAndPeriodOverlaps(
+                        new LicensePlateEmbeddable("ZZZ9999"), // diferente
+                        LocalDate.of(2024, 1, 12),
+                        LocalDate.of(2024, 1, 18)
+                );
+
+        assertThat(result).isFalse();
+    }
+
 }
