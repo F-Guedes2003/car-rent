@@ -12,6 +12,7 @@ import br.ifsp.vvts.security.auth.AuthenticationInfoService;
 import br.ifsp.vvts.security.user.User;
 import io.restassured.filter.log.LogDetail;
 import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -22,6 +23,14 @@ class CarControllerTest extends BaseApiIntegrationTest {
 
     String token;
     User user;
+
+    @Autowired
+    CarRepository carRepository;
+
+    @AfterEach
+    void tearDown() {
+        carRepository.deleteAll();
+    }
 
     @BeforeEach
     void setup() {
@@ -100,4 +109,31 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .statusCode(204);
     }
 
+    @Test
+    @DisplayName("Should return 200 and list of cars in database")
+    void shouldReturn200AndAListOfCarsInDatabase() {
+
+        var corolla = new CreateCarRequest("ABC1111","Toyota","Corolla",40000.0);
+        var honda = new CreateCarRequest("ABC4321","Honda","Civic",45000.0);
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(corolla).post("/api/v1/cars");
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(honda).post("/api/v1/cars");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .get("/api/v1/cars")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(200)
+                .body("[0].licensePlate", equalTo("ABC1111"))
+                .body("[0].brand", equalTo("Toyota"))
+                .body("[0].model", equalTo("Corolla"))
+                .body("[0].basePrice", equalTo(40000.0F))
+
+                .body("[1].licensePlate", equalTo("ABC4321"))
+                .body("[1].brand", equalTo("Honda"))
+                .body("[1].model", equalTo("Civic"))
+                .body("[1].basePrice", equalTo(45000.0F));
+    }
 }
