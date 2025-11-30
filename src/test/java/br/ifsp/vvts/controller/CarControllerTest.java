@@ -98,6 +98,42 @@ class CarControllerTest extends BaseApiIntegrationTest {
     }
 
     @Test
+    @DisplayName("Should return 401 if the user tries to list all car and is not authenticated")
+    void shouldReturn401IfUserTriesToListAllCarsAndIsNotAuthenticated() {
+
+        var corolla = new CreateCarRequest("ABC1111","Toyota","Corolla",40000.0);
+        var honda = new CreateCarRequest("ABC4321","Honda","Civic",45000.0);
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(corolla).post("/api/v1/cars");
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(honda).post("/api/v1/cars");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .get("/api/v1/cars")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
+
+    @Test
+    @DisplayName("Should return 401 if the user tries to get a car from database and is not authenticated")
+    void shouldReturn401IfUserTriesToGetCarAndIsNotAuthenticated() {
+
+        var corolla = new CreateCarRequest("ABC1111","Toyota","Corolla",40000.0);
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(corolla).post("/api/v1/cars");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .get("/api/v1/cars/" + corolla.licensePlate())
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
+
+
+
+    @Test
     @DisplayName("Should register a car and return 201 with car object as payload")
     void shouldRegisterCarAndReturn201WithCarObjectAsPayload() {
 
