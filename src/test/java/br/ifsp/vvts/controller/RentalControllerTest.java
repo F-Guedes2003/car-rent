@@ -293,4 +293,41 @@ class RentalControllerTest extends BaseApiIntegrationTest {
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(401);
     }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should Return 400 Bad Request If Period Is Invalid")
+    void shouldReturn400BadRequestIfPeriodIsInvalid() {
+
+        var car = new CreateCarRequest("ABC1234","Toyota","Corolla",40000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(car)
+                .post("/api/v1/cars");
+
+        var customer = new CreateCustomerRequest("Aislan","51430203609");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(customer)
+                .post("/api/v1/customers");
+
+        var request = new CreateRentalRequest(car.licensePlate(),customer.cpf(), LocalDate.of(2025,1,2),LocalDate.of(2025,1,1),true);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .when().post("/api/v1/rentals")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(400);
+    }
 }
