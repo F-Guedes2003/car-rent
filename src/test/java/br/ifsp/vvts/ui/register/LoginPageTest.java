@@ -11,11 +11,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -126,7 +129,10 @@ public class LoginPageTest {
                 .fillPassword(TEST_PASSWORD)
                 .clickSubmit();
 
-        assertTrue(driver.getCurrentUrl().contains("/login"),
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        wait.until(ExpectedConditions.urlContains("/rentals"));
+
+        assertTrue(driver.getCurrentUrl().contains("/rentals"),
                 "User should has been redirected to login page");
     }
 }
