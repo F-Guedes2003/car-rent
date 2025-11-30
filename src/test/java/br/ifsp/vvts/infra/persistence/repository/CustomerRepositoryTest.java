@@ -6,6 +6,7 @@ import br.ifsp.vvts.domain.model.customer.CPF;
 import br.ifsp.vvts.domain.model.customer.Customer;
 import br.ifsp.vvts.infra.persistence.entity.car.CarEntity;
 import br.ifsp.vvts.infra.persistence.entity.car.LicensePlateEmbeddable;
+import br.ifsp.vvts.infra.persistence.entity.customer.CustomerEntity;
 import br.ifsp.vvts.infra.persistence.mapper.CarMapper;
 import br.ifsp.vvts.infra.persistence.mapper.CustomerMapper;
 import br.ifsp.vvts.security.user.JpaUserRepository;
@@ -80,6 +81,16 @@ class CustomerRepositoryTest {
 
         assertThrows(JpaSystemException.class, () -> {
             repository.saveAndFlush(entity2);
+        });
+    }
+
+    @Test
+    @DisplayName("Should return an empty optional of the provided CPF when it is present")
+    public void shouldNotAllowNullCpf() {
+        var customerEntity = new CustomerEntity(null, "John Doe", null);
+
+        assertThrows(JpaSystemException.class, () -> {
+            repository.save(customerEntity);
         });
     }
 }
