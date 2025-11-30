@@ -129,4 +129,25 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
                 .body("[1].name", equalTo("Fhelippe"))
                 .body("[1].cpf", equalTo("765.401.664-60"));
     }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 200 and a customer using cpf")
+    void shouldReturn200AndACustomerUsingCpf() {
+
+        var request = new CreateCustomerRequest("Aislan","51430203609");
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(request).post("/api/v1/customers");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .get("/api/v1/customers/" + request.cpf())
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(200)
+                .body("name", equalTo("Aislan"))
+                .body("cpf", equalTo("514.302.036-09"));
+    }
 }
