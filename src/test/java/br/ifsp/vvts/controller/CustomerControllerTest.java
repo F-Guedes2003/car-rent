@@ -168,4 +168,27 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(401);
     }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 401 if the user tries to delete a customer and is not authenticated")
+    void shouldReturn401IfUserTriesToDeleteCustomerAndIsNotAuthenticated(){
+        var request = new CreateCustomerRequest("Aislan","51430203609");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .post("/api/v1/customers");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .when().delete("/api/v1/customers/" + request.cpf())
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
 }
