@@ -39,6 +39,23 @@ class CarControllerTest extends BaseApiIntegrationTest {
     }
 
     @Test
+    @DisplayName("Should return 401 if the user tries to create a car and is not authenticated")
+    void shouldReturn401IfUserTriesToCreateCarAndIsNotAuthenticated() {
+
+        var request = new CreateCarRequest(
+                "ABC1235","Toyota","Corolla",40000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .body(request)
+                .when().post("/api/v1/cars")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
+
+    @Test
     @DisplayName("Should register a car and return 201 with car object as payload")
     void shouldRegisterCarAndReturn201WithCarObjectAsPayload() {
 
@@ -157,4 +174,6 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .body("model", equalTo("Corolla"))
                 .body("basePrice", equalTo(40000.0F));
     }
+
+
 }
