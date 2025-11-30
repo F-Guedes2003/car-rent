@@ -21,7 +21,7 @@ import java.util.UUID;
 public class User implements UserDetails {
     @Id
     @JdbcTypeCode(Types.VARCHAR)
-    @NonNull @Column(nullable = false)
+    @Column(nullable = false)
     private UUID id;
     @NonNull @Column(nullable = false)
     private String name;
