@@ -5,6 +5,7 @@ import br.ifsp.vvts.security.auth.AuthRequest;
 import br.ifsp.vvts.security.auth.AuthResponse;
 import br.ifsp.vvts.security.user.JpaUserRepository;
 import br.ifsp.vvts.security.user.User;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
@@ -24,11 +25,12 @@ public class BaseApiIntegrationTest {
     @LocalServerPort protected int port = 8080;
     @Autowired private JpaUserRepository repository;
 
-    @BeforeEach public void setup(){
+    @BeforeEach public void generalSetup(){
         baseURI = "http://localhost:8080";
     }
 
-    @AfterEach void tearDown() {
+    @AfterEach
+    void tearDown() {
         repository.deleteAll();
     }
 
