@@ -49,4 +49,18 @@ class CustomerRepositoryTest {
 
         assertThat(queryResult.get()).isEqualTo(customerEntity);
     }
+
+    @Test
+    @DisplayName("Should return an empty optional of the provided CPF when it is present")
+    public void shouldReturnAnEmptyOptional() {
+        var cpf = CPF.of("12345678909");
+
+        var customer = new Customer("Gustavo Gomes", cpf);
+        var customerEntity = customerMapper.toEntity(customer);
+
+        repository.save(customerEntity);
+        var queryResult = repository.findByCpfNumber("12345678900");
+
+        assertTrue(queryResult.isEmpty());
+    }
 }
