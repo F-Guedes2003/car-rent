@@ -2,19 +2,11 @@ package br.ifsp.vvts.controller;
 
 import br.ifsp.vvts.domain.dto.CreateCarRequest;
 import br.ifsp.vvts.domain.dto.UpdateCarRequest;
-import br.ifsp.vvts.domain.model.car.Car;
-import br.ifsp.vvts.domain.model.car.LicensePlate;
-import br.ifsp.vvts.domain.useCases.ManageCarUseCase;
-import br.ifsp.vvts.infra.persistence.entity.car.CarEntity;
-import br.ifsp.vvts.infra.persistence.entity.car.LicensePlateEmbeddable;
 import br.ifsp.vvts.infra.persistence.repository.CarRepository;
-import br.ifsp.vvts.security.auth.AuthenticationInfoService;
 import br.ifsp.vvts.security.user.User;
 import io.restassured.filter.log.LogDetail;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -299,5 +291,42 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(409);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 404 if user tries to update a inexistent car")
+    void shouldReturn404IfUserTriesToUpdateInexistentCar() {
+
+        var updateRequest = new UpdateCarRequest("Toyota","Corolla",45000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(updateRequest)
+                .put("/api/v1/cars/ABC1234")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(404);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 404 if user tries to delete a inexistent car")
+    void shouldReturn404IfUserTriesToDeleteInexistentCar(){
+        var licensePlate = "ABC1234";
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(licensePlate)
+                .delete("/api/v1/cars/" + licensePlate)
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(404);
     }
 }
