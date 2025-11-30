@@ -136,4 +136,25 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .body("[1].model", equalTo("Civic"))
                 .body("[1].basePrice", equalTo(45000.0F));
     }
+
+    @Test
+    @DisplayName("Should return 200 and a car using license plate in database")
+    void shouldReturn200AndACarUsingLicensePlateInDatabase() {
+
+        var corolla = new CreateCarRequest("ABC1111","Toyota","Corolla",40000.0);
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(corolla).post("/api/v1/cars");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .get("/api/v1/cars/" + corolla.licensePlate())
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(200)
+                .body("licensePlate", equalTo("ABC1111"))
+                .body("brand", equalTo("Toyota"))
+                .body("model", equalTo("Corolla"))
+                .body("basePrice", equalTo(40000.0F));
+    }
 }
