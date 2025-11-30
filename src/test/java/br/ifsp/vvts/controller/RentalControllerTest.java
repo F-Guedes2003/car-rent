@@ -211,5 +211,39 @@ class RentalControllerTest extends BaseApiIntegrationTest {
                 .statusCode(200);
     }
 
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 401 if unauthorized user tries to register rental")
+    void shouldReturn401IfUnauthorizedUserTriesToRegisterRental() {
 
+        var car = new CreateCarRequest("ABC1234","Toyota","Corolla",40000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .body(car)
+                .post("/api/v1/cars");
+
+        var customer = new CreateCustomerRequest("Aislan","51430203609");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(customer)
+                .post("/api/v1/customers");
+
+        var request = new CreateRentalRequest(car.licensePlate(),customer.cpf(), LocalDate.of(2025,1,1),LocalDate.of(2025,1,2),true);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .when().post("/api/v1/rentals")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
 }
