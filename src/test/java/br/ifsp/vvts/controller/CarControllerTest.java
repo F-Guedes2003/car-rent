@@ -329,4 +329,24 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(404);
     }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 400 if license plate is invalid")
+    void shouldReturn400IfLicensePlateIsInvalid() {
+
+        var request = new CreateCarRequest(
+                "ABC1235132","Toyota","Corolla",40000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .when().post("/api/v1/cars")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(400);
+    }
 }
