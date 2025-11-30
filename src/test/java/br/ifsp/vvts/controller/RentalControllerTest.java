@@ -246,4 +246,51 @@ class RentalControllerTest extends BaseApiIntegrationTest {
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(401);
     }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 401 if unauthorized tries to delete rental")
+    void shouldReturn401IfUnauthorizedUserTriesToDeleteRental() {
+
+        var car = new CreateCarRequest("ABC1234", "Toyota", "Corolla", 40000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(car)
+                .post("/api/v1/cars");
+
+        var customer = new CreateCustomerRequest("Aislan", "51430203609");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(customer)
+                .post("/api/v1/customers");
+
+        var rental = new CreateRentalRequest(car.licensePlate(),customer.cpf(), LocalDate.of(2025,1,1),LocalDate.of(2025,1,2),true);
+
+        long id = given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(rental)
+                .when().post("/api/v1/rentals")
+                .then()
+                .statusCode(201)
+                .extract()
+                .jsonPath()
+                .getLong("id");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .when().delete("/api/v1/rentals/" + id)
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
 }
