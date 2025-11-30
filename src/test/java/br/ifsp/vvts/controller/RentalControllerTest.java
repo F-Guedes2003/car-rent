@@ -3,11 +3,13 @@ package br.ifsp.vvts.controller;
 import br.ifsp.vvts.domain.dto.CreateCarRequest;
 import br.ifsp.vvts.domain.dto.CreateCustomerRequest;
 import br.ifsp.vvts.domain.dto.CreateRentalRequest;
+import br.ifsp.vvts.domain.dto.UpdateCustomerRequest;
 import br.ifsp.vvts.infra.persistence.repository.RentalRepository;
 import br.ifsp.vvts.security.user.User;
 import io.restassured.filter.log.LogDetail;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 
@@ -64,11 +66,57 @@ class RentalControllerTest extends BaseApiIntegrationTest {
                 .port(port)
                 .header("Authorization", "Bearer " + token)
                 .body(request)
-                .when().post("/api/v1/rentals")
-                .then()
+        .when().post("/api/v1/rentals")
+        .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(201);
     }
 
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should delete a rental and return 204 with no content")
+    void shouldDeleteRentalAndReturn204WithNoContent() {
 
+        var car = new CreateCarRequest("ABC1234", "Toyota", "Corolla", 40000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(car)
+                .post("/api/v1/cars");
+
+        var customer = new CreateCustomerRequest("Aislan", "51430203609");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(customer)
+                .post("/api/v1/customers");
+
+        var rental = new CreateRentalRequest(car.licensePlate(),customer.cpf(), LocalDate.of(2025,1,1),LocalDate.of(2025,1,2),true);
+
+        long id = given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(rental)
+        .when().post("/api/v1/rentals")
+        .then()
+                .statusCode(201)
+                .extract()
+                .jsonPath()
+                .getLong("id");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+        .when().delete("/api/v1/rentals/" + id)
+        .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(204);
+    }
 }
