@@ -121,4 +121,27 @@ class RentalRepositoryTest {
         assertThat(result).isFalse();
     }
 
+    @Test
+    @DisplayName("Status is incative should return false(everything else is true)")
+    void inactiveStatusShouldReturnFalse() {
+
+        var customer = createCustomer();
+        var car = createCar("ABC1234");
+
+        createRental(car, customer,
+                LocalDate.of(2024, 1, 10),
+                LocalDate.of(2024, 1, 20),
+                RentalStatus.FINISHED
+        );
+
+        boolean result = rentalRepository
+                .existsByCarLicensePlateAndPeriodOverlaps(
+                        new LicensePlateEmbeddable("ABC1234"),
+                        LocalDate.of(2024, 1, 12),
+                        LocalDate.of(2024, 1, 18)
+                );
+
+        assertThat(result).isFalse();
+    }
+
 }
