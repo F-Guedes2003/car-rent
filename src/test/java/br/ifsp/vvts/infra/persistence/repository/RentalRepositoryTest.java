@@ -144,4 +144,25 @@ class RentalRepositoryTest {
         assertThat(result).isFalse();
     }
 
+    @Test
+    @DisplayName("No rentals on the provided overlap should return false")
+    void NoRentalsOnOverlapShouldReturnFalse() {
+
+        var customer = createCustomer();
+        var car = createCar("ABC1234");
+
+        createRental(car, customer,
+                LocalDate.of(2024, 1, 10),
+                LocalDate.of(2024, 1, 20),
+                RentalStatus.ACTIVE);
+
+        boolean result = rentalRepository
+                .existsByCarLicensePlateAndPeriodOverlaps(
+                        new LicensePlateEmbeddable("ABC1234"),
+                        LocalDate.of(2024, 1, 21), // começa depois
+                        LocalDate.of(2024, 1, 25)
+                );
+
+        assertThat(result).isFalse();
+    }
 }
