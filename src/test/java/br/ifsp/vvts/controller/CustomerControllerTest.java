@@ -2,6 +2,7 @@ package br.ifsp.vvts.controller;
 
 import br.ifsp.vvts.domain.dto.CreateCarRequest;
 import br.ifsp.vvts.domain.dto.CreateCustomerRequest;
+import br.ifsp.vvts.domain.dto.UpdateCarRequest;
 import br.ifsp.vvts.domain.dto.UpdateCustomerRequest;
 import br.ifsp.vvts.infra.persistence.repository.CustomerRepository;
 import br.ifsp.vvts.security.user.User;
@@ -187,6 +188,32 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
                 .contentType("application/json")
                 .port(port)
                 .when().delete("/api/v1/customers/" + request.cpf())
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 401 if the user tries to update a customer and is not authenticated")
+    void shouldReturn401IfUserTriesToUpdateCustomerAndIsNotAuthenticated() {
+
+        var request = new CreateCustomerRequest("Aislan","51430203609");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .post("/api/v1/customers");
+
+        var updateRequest = new UpdateCustomerRequest("Aislan Pepi");
+
+        given()
+                .contentType("application/json")
+                .port(port).body(updateRequest)
+                .put("/api/v1/customers/" + request.cpf())
                 .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(401);
