@@ -56,6 +56,48 @@ class CarControllerTest extends BaseApiIntegrationTest {
     }
 
     @Test
+    @DisplayName("Should return 401 if the user tries to delete a car and is not authenticated")
+    void shouldReturn401IfUserTriesToDeleteCarAndIsNotAuthenticated(){
+        var createRequest = new CreateCarRequest("ABC1234","Toyota","Corolla",40000.0);
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(createRequest).post("/api/v1/cars");
+
+        var licensePlate = createRequest.licensePlate();
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .body(licensePlate)
+                .delete("/api/v1/cars/" + licensePlate)
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
+
+    @Test
+    @DisplayName("Should return 401 if the user tries to update a car and is not authenticated")
+    void shouldReturn401IfUserTriesToUpdateCarAndIsNotAuthenticated() {
+
+        var createRequest = new CreateCarRequest("ABC1234","Toyota","Corolla",40000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(createRequest)
+                .post("/api/v1/cars");
+
+        var updateRequest = new UpdateCarRequest("Toyota","Corolla",45000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port).body(updateRequest)
+                .put("/api/v1/cars/" + createRequest.licensePlate())
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
+
+    @Test
     @DisplayName("Should register a car and return 201 with car object as payload")
     void shouldRegisterCarAndReturn201WithCarObjectAsPayload() {
 
@@ -97,7 +139,7 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .port(port)
                 .header("Authorization", "Bearer " + token)
                 .body(updateRequest)
-                .put("/api/v1/cars/ABC1234")
+                .put("/api/v1/cars/" + createRequest.licensePlate())
                 .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(200)
