@@ -6,6 +6,8 @@ import br.ifsp.vvts.infra.persistence.repository.CarRepository;
 import br.ifsp.vvts.security.user.User;
 import io.restassured.filter.log.LogDetail;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static io.restassured.RestAssured.given;
@@ -338,6 +340,127 @@ class CarControllerTest extends BaseApiIntegrationTest {
 
         var request = new CreateCarRequest(
                 "ABC1235132","Toyota","Corolla",40000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .when().post("/api/v1/cars")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(400);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 404 if the user tries to get a inexistent car")
+    void shouldReturn404IfUserTriesToGetInexistentCar() {
+
+        var corolla = new CreateCarRequest("ABC1111","Toyota","Corolla",40000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+        .when().get("/api/v1/cars/" + corolla.licensePlate())
+        .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(404);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @ParameterizedTest
+    @ValueSource(doubles = {-4000.0,0})
+    @DisplayName("Should return 400 Bad Request if Base Price is Negative")
+    void shouldReturn400BadRequestIfPriceIsNegativeOrZero(double basePrice) {
+
+        var request = new CreateCarRequest(
+                "ABC1235","Toyota","Corolla",basePrice);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .when().post("/api/v1/cars")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(400);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 400 Bad Request if brand is null")
+    void shouldReturn400BadRequestIfBrandIsNull
+            () {
+
+        var request = new CreateCarRequest(
+                "ABC1235",null,"Corolla",4000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .when().post("/api/v1/cars")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(400);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 400 Bad Request if model is null")
+    void shouldReturn400BadRequestIfModelIsNull
+            () {
+
+        var request = new CreateCarRequest(
+                "ABC1235","Toyota",null,4000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .when().post("/api/v1/cars")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(400);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 400 Bad Request if brand is empty")
+    void shouldReturn400BadRequestIfBrandIsEmpty() {
+
+        var request = new CreateCarRequest(
+                "ABC1235","","Corolla",4000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .when().post("/api/v1/cars")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(400);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 400 Bad Request if model is null")
+    void shouldReturn400BadRequestIfModelIsEmpty() {
+
+        var request = new CreateCarRequest(
+                "ABC1235","Toyota","",4000.0);
 
         given()
                 .contentType("application/json")
