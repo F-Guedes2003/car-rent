@@ -80,4 +80,24 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .body("model", equalTo("Corolla"))
                 .body("basePrice", equalTo(45000.0F));
     }
+
+    @Test
+    @DisplayName("Should delete car and return 204 with no content")
+    void shouldDeleteCarAndReturn204WithNoContent(){
+        var createRequest = new CreateCarRequest("ABC1234","Toyota","Corolla",40000.0);
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(createRequest).post("/api/v1/cars");
+
+        var licensePlate = createRequest.licensePlate();
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(licensePlate)
+                .delete("/api/v1/cars/" + licensePlate)
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(204);
+    }
+
 }
