@@ -1,8 +1,6 @@
 package br.ifsp.vvts.controller;
 
-import br.ifsp.vvts.domain.dto.CreateCarRequest;
 import br.ifsp.vvts.domain.dto.CreateCustomerRequest;
-import br.ifsp.vvts.domain.dto.UpdateCarRequest;
 import br.ifsp.vvts.domain.dto.UpdateCustomerRequest;
 import br.ifsp.vvts.infra.persistence.repository.CustomerRepository;
 import br.ifsp.vvts.security.user.User;
