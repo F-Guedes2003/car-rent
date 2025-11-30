@@ -4,6 +4,7 @@ import br.ifsp.vvts.domain.model.car.Car;
 import br.ifsp.vvts.domain.model.car.LicensePlate;
 import br.ifsp.vvts.infra.persistence.entity.car.CarEntity;
 import br.ifsp.vvts.infra.persistence.entity.car.LicensePlateEmbeddable;
+import br.ifsp.vvts.infra.persistence.entity.customer.CustomerEntity;
 import br.ifsp.vvts.infra.persistence.mapper.CarMapper;
 import br.ifsp.vvts.security.user.JpaUserRepository;
 import br.ifsp.vvts.security.user.Role;
@@ -100,4 +101,18 @@ class CarRepositoryTest {
         });
     }
 
+    @Test
+    @DisplayName("Should not allow to persist a customer with a null cpf")
+    public void shouldNotAllowNullCpf() {
+        var carEntity = new CarEntity(
+                null,
+                null,
+                "Honda",
+                "Accord",
+                250);
+
+        assertThrows(JpaSystemException.class, () -> {
+            repository.save(carEntity);
+        });
+    }
 }
