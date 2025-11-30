@@ -41,110 +41,6 @@ class CarControllerTest extends BaseApiIntegrationTest {
     @Tag("ApiTest")
     @Tag("IntegrationTest")
     @Test
-    @DisplayName("Should return 401 if the user tries to create a car and is not authenticated")
-    void shouldReturn401IfUserTriesToCreateCarAndIsNotAuthenticated() {
-
-        var request = new CreateCarRequest(
-                "ABC1235","Toyota","Corolla",40000.0);
-
-        given()
-                .contentType("application/json")
-                .port(port)
-                .body(request)
-                .when().post("/api/v1/cars")
-                .then()
-                .log().ifValidationFails(LogDetail.BODY)
-                .statusCode(401);
-    }
-
-    @Tag("ApiTest")
-    @Tag("IntegrationTest")
-    @Test
-    @DisplayName("Should return 401 if the user tries to delete a car and is not authenticated")
-    void shouldReturn401IfUserTriesToDeleteCarAndIsNotAuthenticated(){
-        var createRequest = new CreateCarRequest("ABC1234","Toyota","Corolla",40000.0);
-        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(createRequest).post("/api/v1/cars");
-
-        var licensePlate = createRequest.licensePlate();
-
-        given()
-                .contentType("application/json")
-                .port(port)
-                .body(licensePlate)
-                .delete("/api/v1/cars/" + licensePlate)
-                .then()
-                .log().ifValidationFails(LogDetail.BODY)
-                .statusCode(401);
-    }
-
-    @Tag("ApiTest")
-    @Tag("IntegrationTest")
-    @Test
-    @DisplayName("Should return 401 if the user tries to update a car and is not authenticated")
-    void shouldReturn401IfUserTriesToUpdateCarAndIsNotAuthenticated() {
-
-        var createRequest = new CreateCarRequest("ABC1234","Toyota","Corolla",40000.0);
-
-        given()
-                .contentType("application/json")
-                .port(port)
-                .header("Authorization", "Bearer " + token)
-                .body(createRequest)
-                .post("/api/v1/cars");
-
-        var updateRequest = new UpdateCarRequest("Toyota","Corolla",45000.0);
-
-        given()
-                .contentType("application/json")
-                .port(port).body(updateRequest)
-                .put("/api/v1/cars/" + createRequest.licensePlate())
-                .then()
-                .log().ifValidationFails(LogDetail.BODY)
-                .statusCode(401);
-    }
-
-    @Tag("ApiTest")
-    @Tag("IntegrationTest")
-    @Test
-    @DisplayName("Should return 401 if the user tries to list all car and is not authenticated")
-    void shouldReturn401IfUserTriesToListAllCarsAndIsNotAuthenticated() {
-
-        var corolla = new CreateCarRequest("ABC1111","Toyota","Corolla",40000.0);
-        var honda = new CreateCarRequest("ABC4321","Honda","Civic",45000.0);
-        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(corolla).post("/api/v1/cars");
-        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(honda).post("/api/v1/cars");
-
-        given()
-                .contentType("application/json")
-                .port(port)
-                .get("/api/v1/cars")
-                .then()
-                .log().ifValidationFails(LogDetail.BODY)
-                .statusCode(401);
-    }
-
-    @Tag("ApiTest")
-    @Tag("IntegrationTest")
-    @Test
-    @DisplayName("Should return 401 if the user tries to get a car from database and is not authenticated")
-    void shouldReturn401IfUserTriesToGetCarAndIsNotAuthenticated() {
-
-        var corolla = new CreateCarRequest("ABC1111","Toyota","Corolla",40000.0);
-        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(corolla).post("/api/v1/cars");
-
-        given()
-                .contentType("application/json")
-                .port(port)
-                .get("/api/v1/cars/" + corolla.licensePlate())
-                .then()
-                .log().ifValidationFails(LogDetail.BODY)
-                .statusCode(401);
-    }
-
-
-    @Tag("ApiTest")
-    @Tag("IntegrationTest")
-    @Test
     @DisplayName("Should register a car and return 201 with car object as payload")
     void shouldRegisterCarAndReturn201WithCarObjectAsPayload() {
 
@@ -270,5 +166,138 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .body("brand", equalTo("Toyota"))
                 .body("model", equalTo("Corolla"))
                 .body("basePrice", equalTo(40000.0F));
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 401 if the user tries to create a car and is not authenticated")
+    void shouldReturn401IfUserTriesToCreateCarAndIsNotAuthenticated() {
+
+        var request = new CreateCarRequest(
+                "ABC1235","Toyota","Corolla",40000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .body(request)
+                .when().post("/api/v1/cars")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 401 if the user tries to delete a car and is not authenticated")
+    void shouldReturn401IfUserTriesToDeleteCarAndIsNotAuthenticated(){
+        var createRequest = new CreateCarRequest("ABC1234","Toyota","Corolla",40000.0);
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(createRequest).post("/api/v1/cars");
+
+        var licensePlate = createRequest.licensePlate();
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .body(licensePlate)
+                .delete("/api/v1/cars/" + licensePlate)
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 401 if the user tries to update a car and is not authenticated")
+    void shouldReturn401IfUserTriesToUpdateCarAndIsNotAuthenticated() {
+
+        var createRequest = new CreateCarRequest("ABC1234","Toyota","Corolla",40000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(createRequest)
+                .post("/api/v1/cars");
+
+        var updateRequest = new UpdateCarRequest("Toyota","Corolla",45000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port).body(updateRequest)
+                .put("/api/v1/cars/" + createRequest.licensePlate())
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 401 if the user tries to list all car and is not authenticated")
+    void shouldReturn401IfUserTriesToListAllCarsAndIsNotAuthenticated() {
+
+        var corolla = new CreateCarRequest("ABC1111","Toyota","Corolla",40000.0);
+        var honda = new CreateCarRequest("ABC4321","Honda","Civic",45000.0);
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(corolla).post("/api/v1/cars");
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(honda).post("/api/v1/cars");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .get("/api/v1/cars")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 401 if the user tries to get a car from database and is not authenticated")
+    void shouldReturn401IfUserTriesToGetCarAndIsNotAuthenticated() {
+
+        var corolla = new CreateCarRequest("ABC1111","Toyota","Corolla",40000.0);
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(corolla).post("/api/v1/cars");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .get("/api/v1/cars/" + corolla.licensePlate())
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 409 if user tries to register a car that already is registered")
+    void shouldReturn409IfUserTriesToRegisterCarThatAlreadyIsRegistered(){
+
+        var request = new CreateCarRequest(
+                "ABC1235","Toyota","Corolla",40000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .post("/api/v1/cars");
+
+        var dupRequest = new CreateCarRequest(
+                "ABC1235","Toyota","Corolla",40000.0);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(dupRequest)
+                .when().post("/api/v1/cars")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(409);
     }
 }
