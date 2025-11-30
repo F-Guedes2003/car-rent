@@ -1,5 +1,6 @@
 package br.ifsp.vvts.controller;
 
+import br.ifsp.vvts.domain.dto.CreateCarRequest;
 import br.ifsp.vvts.domain.dto.CreateCustomerRequest;
 import br.ifsp.vvts.domain.dto.UpdateCustomerRequest;
 import br.ifsp.vvts.infra.persistence.repository.CustomerRepository;
@@ -103,5 +104,29 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
         .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(204);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 200 and list of customers in database")
+    void shouldReturn200AndAListOfCustomersInDatabase() {
+        var request = new CreateCustomerRequest("Aislan","51430203609");
+        var request2 = new CreateCustomerRequest("Fhelippe","76540166460");
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(request).post("/api/v1/customers");
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(request2).post("/api/v1/customers");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .get("/api/v1/customers")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(200)
+                .body("[0].name", equalTo("Aislan"))
+                .body("[0].cpf", equalTo("514.302.036-09"))
+                .body("[1].name", equalTo("Fhelippe"))
+                .body("[1].cpf", equalTo("765.401.664-60"));
     }
 }
