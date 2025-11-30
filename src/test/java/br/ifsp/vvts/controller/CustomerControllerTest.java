@@ -1,10 +1,7 @@
 package br.ifsp.vvts.controller;
 
-import br.ifsp.vvts.domain.dto.CreateCarRequest;
 import br.ifsp.vvts.domain.dto.CreateCustomerRequest;
-import br.ifsp.vvts.domain.dto.UpdateCarRequest;
 import br.ifsp.vvts.domain.dto.UpdateCustomerRequest;
-import br.ifsp.vvts.infra.persistence.repository.CarRepository;
 import br.ifsp.vvts.infra.persistence.repository.CustomerRepository;
 import br.ifsp.vvts.security.user.User;
 import io.restassured.filter.log.LogDetail;
@@ -46,8 +43,8 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
                 .port(port)
                 .header("Authorization", "Bearer " + token)
                 .body(request)
-                .when().post("/api/v1/customers")
-                .then()
+        .when().post("/api/v1/customers")
+        .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(201)
                 .body("name", equalTo("Aislan"))
@@ -76,11 +73,35 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
                 .port(port)
                 .header("Authorization", "Bearer " + token)
                 .body(updateRequest)
-                .put("/api/v1/customers/" + request.cpf())
-                .then()
+        .when().put("/api/v1/customers/" + request.cpf())
+        .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(200)
                 .body("name", equalTo("Aislan Pepi"))
                 .body("cpf", equalTo("514.302.036-09"));
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should delete customer and return 204 with no content")
+    void shouldDeleteCustomerAndReturn204WithNoContent(){
+        var request = new CreateCustomerRequest("Aislan","51430203609");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .post("/api/v1/customers");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+        .when().delete("/api/v1/customers/" + request.cpf())
+        .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(204);
     }
 }
