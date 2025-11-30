@@ -122,7 +122,7 @@ class RentalRepositoryTest {
     }
 
     @Test
-    @DisplayName("Status is incative should return false(everything else is true)")
+    @DisplayName("Status is inactive should return false(everything else is true)")
     void inactiveStatusShouldReturnFalse() {
 
         var customer = createCustomer();
