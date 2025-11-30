@@ -85,7 +85,7 @@ class CustomerRepositoryTest {
     }
 
     @Test
-    @DisplayName("Should return an empty optional of the provided CPF when it is present")
+    @DisplayName("Should not allow to persist a customer with a null cpf")
     public void shouldNotAllowNullCpf() {
         var customerEntity = new CustomerEntity(null, "John Doe", null);
 
