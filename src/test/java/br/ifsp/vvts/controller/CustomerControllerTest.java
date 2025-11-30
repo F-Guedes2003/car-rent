@@ -218,4 +218,42 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(401);
     }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 401 if a unauthenticated user tries to list all customers")
+    void shouldReturn401IfUnauthenticatedUserTriesToListAllCustomers() {
+        var request = new CreateCustomerRequest("Aislan","51430203609");
+        var request2 = new CreateCustomerRequest("Fhelippe","76540166460");
+
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(request).post("/api/v1/customers");
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(request2).post("/api/v1/customers");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .get("/api/v1/customers")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 401 if unauthenticated user tries to get a customer using cpf")
+    void shouldReturn401IfUnauthenticatedUserTriesToGetCustomerUsingCpfAndIs() {
+
+        var request = new CreateCustomerRequest("Aislan","51430203609");
+        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(request).post("/api/v1/customers");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .get("/api/v1/customers/" + request.cpf())
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
 }
