@@ -121,8 +121,8 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
                 .contentType("application/json")
                 .port(port)
                 .header("Authorization", "Bearer " + token)
-                .get("/api/v1/customers")
-                .then()
+        .when().get("/api/v1/customers")
+        .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(200)
                 .body("[0].name", equalTo("Aislan"))
@@ -144,8 +144,8 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
                 .contentType("application/json")
                 .port(port)
                 .header("Authorization", "Bearer " + token)
-                .get("/api/v1/customers/" + request.cpf())
-                .then()
+        .when().get("/api/v1/customers/" + request.cpf())
+        .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(200)
                 .body("name", equalTo("Aislan"))
@@ -164,8 +164,8 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
                 .contentType("application/json")
                 .port(port)
                 .body(request)
-                .when().post("/api/v1/customers")
-                .then()
+        .when().post("/api/v1/customers")
+        .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(401);
     }
@@ -187,8 +187,8 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
         given()
                 .contentType("application/json")
                 .port(port)
-                .when().delete("/api/v1/customers/" + request.cpf())
-                .then()
+        .when().delete("/api/v1/customers/" + request.cpf())
+        .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(401);
     }
@@ -213,8 +213,8 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
         given()
                 .contentType("application/json")
                 .port(port).body(updateRequest)
-                .put("/api/v1/customers/" + request.cpf())
-                .then()
+        .when().put("/api/v1/customers/" + request.cpf())
+        .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(401);
     }
@@ -233,8 +233,8 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
         given()
                 .contentType("application/json")
                 .port(port)
-                .get("/api/v1/customers")
-                .then()
+        .when().get("/api/v1/customers")
+        .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(401);
     }
@@ -251,8 +251,8 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
         given()
                 .contentType("application/json")
                 .port(port)
-                .get("/api/v1/customers/" + request.cpf())
-                .then()
+        .when().get("/api/v1/customers/" + request.cpf())
+        .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(401);
     }
@@ -278,9 +278,48 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
                 .port(port)
                 .header("Authorization", "Bearer " + token)
                 .body(request)
-                .when().post("/api/v1/customers")
-                .then()
+        .when().post("/api/v1/customers")
+        .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(409);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 404 if user tries to update a inexistent customer")
+    void shouldReturn404IfUserTriesToUpdateInexistentCustomer() {
+
+        var cpf = "51430203609";
+
+        var request = new UpdateCustomerRequest("Aislan");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+        .when().put("/api/v1/customers/" + cpf)
+        .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(404);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 404 if user tries to delete a inexistent customer")
+    void shouldReturn404IfUserTriesToDeleteInexistentCustomer() {
+
+        var cpf = "51430203609";
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+        .when().delete("/api/v1/customers/" + cpf)
+        .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(404);
     }
 }
