@@ -150,4 +150,22 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
                 .body("name", equalTo("Aislan"))
                 .body("cpf", equalTo("514.302.036-09"));
     }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 401 if the user tries to create a customer and is not authenticated")
+    void shouldReturn401IfUserTriesToCreateCustomerAndIsNotAuthenticated() {
+
+        var request = new CreateCustomerRequest("Aislan", "51430203609");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .body(request)
+                .when().post("/api/v1/customers")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(401);
+    }
 }
