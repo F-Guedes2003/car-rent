@@ -322,4 +322,23 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(404);
     }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
+    @DisplayName("Should return 400 Bad Request if cpf is invalid")
+    void shouldReturn400BadRequestIfCpfIsInvalid() {
+
+        var request = new CreateCustomerRequest("Aislan","11111111111");
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .when().post("/api/v1/customers")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(400);
+    }
 }
