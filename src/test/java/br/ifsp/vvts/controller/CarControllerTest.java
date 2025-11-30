@@ -38,6 +38,8 @@ class CarControllerTest extends BaseApiIntegrationTest {
         token = authenticate(user.getEmail(), "123password");
     }
 
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
     @Test
     @DisplayName("Should return 401 if the user tries to create a car and is not authenticated")
     void shouldReturn401IfUserTriesToCreateCarAndIsNotAuthenticated() {
@@ -55,6 +57,8 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .statusCode(401);
     }
 
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
     @Test
     @DisplayName("Should return 401 if the user tries to delete a car and is not authenticated")
     void shouldReturn401IfUserTriesToDeleteCarAndIsNotAuthenticated(){
@@ -73,6 +77,8 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .statusCode(401);
     }
 
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
     @Test
     @DisplayName("Should return 401 if the user tries to update a car and is not authenticated")
     void shouldReturn401IfUserTriesToUpdateCarAndIsNotAuthenticated() {
@@ -97,6 +103,8 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .statusCode(401);
     }
 
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
     @Test
     @DisplayName("Should return 401 if the user tries to list all car and is not authenticated")
     void shouldReturn401IfUserTriesToListAllCarsAndIsNotAuthenticated() {
@@ -115,6 +123,8 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .statusCode(401);
     }
 
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
     @Test
     @DisplayName("Should return 401 if the user tries to get a car from database and is not authenticated")
     void shouldReturn401IfUserTriesToGetCarAndIsNotAuthenticated() {
@@ -132,7 +142,8 @@ class CarControllerTest extends BaseApiIntegrationTest {
     }
 
 
-
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
     @Test
     @DisplayName("Should register a car and return 201 with car object as payload")
     void shouldRegisterCarAndReturn201WithCarObjectAsPayload() {
@@ -155,6 +166,8 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .body("basePrice", equalTo(40000.0F));
     }
 
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
     @Test
     @DisplayName("Should update a car and return 200 with updated values")
     void shouldUpdateCarAndReturn200WithCarObjectAsPayload() {
@@ -185,6 +198,8 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .body("basePrice", equalTo(45000.0F));
     }
 
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
     @Test
     @DisplayName("Should delete car and return 204 with no content")
     void shouldDeleteCarAndReturn204WithNoContent(){
@@ -204,6 +219,8 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .statusCode(204);
     }
 
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
     @Test
     @DisplayName("Should return 200 and list of cars in database")
     void shouldReturn200AndAListOfCarsInDatabase() {
@@ -232,6 +249,8 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .body("[1].basePrice", equalTo(45000.0F));
     }
 
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
     @Test
     @DisplayName("Should return 200 and a car using license plate in database")
     void shouldReturn200AndACarUsingLicensePlateInDatabase() {
@@ -252,6 +271,4 @@ class CarControllerTest extends BaseApiIntegrationTest {
                 .body("model", equalTo("Corolla"))
                 .body("basePrice", equalTo(40000.0F));
     }
-
-
 }
