@@ -15,6 +15,7 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
 
     String token;
     User user;
+    CreateCustomerRequest customer;
 
     @Autowired
     CustomerRepository repository;
@@ -26,6 +27,7 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
 
     @BeforeEach
     void setup() {
+        customer = createCustomer("Aislan","51430203609");
         user = register("123password");
         token = authenticate(user.getEmail(), "123password");
     }
@@ -36,7 +38,7 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
     @DisplayName("Should register a customer and return 201 with customer object as payload")
     void shouldRegisterCustomerAndReturn201WithCustomerObjectAsPayload() {
 
-        var request = new CreateCustomerRequest("Aislan","51430203609");
+        var request = new CreateCustomerRequest("Fhelippe","76540166460");
 
         given()
                 .contentType("application/json")
@@ -47,8 +49,8 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
         .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(201)
-                .body("name", equalTo("Aislan"))
-                .body("cpf", equalTo("514.302.036-09"));
+                .body("name", equalTo("Fhelippe"))
+                .body("cpf", equalTo("765.401.664-60"));
     }
 
     @Tag("ApiTest")
@@ -57,15 +59,6 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
     @DisplayName("Should update a car and return 200 with updated values")
     void shouldUpdateCarAndReturn200WithCarObjectAsPayload() {
 
-        var request = new CreateCustomerRequest("Aislan","51430203609");
-
-        given()
-                .contentType("application/json")
-                .port(port)
-                .header("Authorization", "Bearer " + token)
-                .body(request)
-                .post("/api/v1/customers");
-
         var updateRequest = new UpdateCustomerRequest("Aislan Pepi");
 
         given()
@@ -73,7 +66,7 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
                 .port(port)
                 .header("Authorization", "Bearer " + token)
                 .body(updateRequest)
-        .when().put("/api/v1/customers/" + request.cpf())
+        .when().put("/api/v1/customers/" + customer.cpf())
         .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(200)
@@ -86,20 +79,12 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
     @Test
     @DisplayName("Should delete customer and return 204 with no content")
     void shouldDeleteCustomerAndReturn204WithNoContent(){
-        var request = new CreateCustomerRequest("Aislan","51430203609");
 
         given()
                 .contentType("application/json")
                 .port(port)
                 .header("Authorization", "Bearer " + token)
-                .body(request)
-                .post("/api/v1/customers");
-
-        given()
-                .contentType("application/json")
-                .port(port)
-                .header("Authorization", "Bearer " + token)
-        .when().delete("/api/v1/customers/" + request.cpf())
+        .when().delete("/api/v1/customers/" + customer.cpf())
         .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(204);
@@ -135,14 +120,11 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
     @DisplayName("Should return 200 and a customer using cpf")
     void shouldReturn200AndACustomerUsingCpf() {
 
-        var request = new CreateCustomerRequest("Aislan","51430203609");
-        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(request).post("/api/v1/customers");
-
         given()
                 .contentType("application/json")
                 .port(port)
                 .header("Authorization", "Bearer " + token)
-        .when().get("/api/v1/customers/" + request.cpf())
+        .when().get("/api/v1/customers/" + customer.cpf())
         .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(200)
@@ -173,19 +155,11 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
     @Test
     @DisplayName("Should return 401 if the user tries to delete a customer and is not authenticated")
     void shouldReturn401IfUserTriesToDeleteCustomerAndIsNotAuthenticated(){
-        var request = new CreateCustomerRequest("Aislan","51430203609");
 
         given()
                 .contentType("application/json")
                 .port(port)
-                .header("Authorization", "Bearer " + token)
-                .body(request)
-                .post("/api/v1/customers");
-
-        given()
-                .contentType("application/json")
-                .port(port)
-        .when().delete("/api/v1/customers/" + request.cpf())
+        .when().delete("/api/v1/customers/" + customer.cpf())
         .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(401);
@@ -197,21 +171,12 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
     @DisplayName("Should return 401 if the user tries to update a customer and is not authenticated")
     void shouldReturn401IfUserTriesToUpdateCustomerAndIsNotAuthenticated() {
 
-        var request = new CreateCustomerRequest("Aislan","51430203609");
-
-        given()
-                .contentType("application/json")
-                .port(port)
-                .header("Authorization", "Bearer " + token)
-                .body(request)
-                .post("/api/v1/customers");
-
         var updateRequest = new UpdateCustomerRequest("Aislan Pepi");
 
         given()
                 .contentType("application/json")
                 .port(port).body(updateRequest)
-        .when().put("/api/v1/customers/" + request.cpf())
+        .when().put("/api/v1/customers/" + customer.cpf())
         .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(401);
@@ -243,13 +208,10 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
     @DisplayName("Should return 401 if unauthenticated user tries to get a customer using cpf")
     void shouldReturn401IfUnauthenticatedUserTriesToGetCustomerUsingCpfAndIs() {
 
-        var request = new CreateCustomerRequest("Aislan","51430203609");
-        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(request).post("/api/v1/customers");
-
         given()
                 .contentType("application/json")
                 .port(port)
-        .when().get("/api/v1/customers/" + request.cpf())
+        .when().get("/api/v1/customers/" + customer.cpf())
         .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(401);
@@ -261,21 +223,18 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
     @DisplayName("Should return 409 if user tries to register a customer that already is registered")
     void shouldReturn409IfUserTriesToRegisterCustomerThatAlreadyIsRegistered(){
 
-        var request = new CreateCustomerRequest("Aislan","51430203609");
-        given().contentType("application/json").port(port).header("Authorization", "Bearer " + token).body(request).post("/api/v1/customers");
-
         given()
                 .contentType("application/json")
                 .port(port)
                 .header("Authorization", "Bearer " + token)
-                .body(request)
+                .body(customer)
                 .post("/api/v1/cars");
 
         given()
                 .contentType("application/json")
                 .port(port)
                 .header("Authorization", "Bearer " + token)
-                .body(request)
+                .body(customer)
         .when().post("/api/v1/customers")
         .then()
                 .log().ifValidationFails(LogDetail.BODY)
@@ -288,7 +247,7 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
     @DisplayName("Should return 404 if user tries to update a inexistent customer")
     void shouldReturn404IfUserTriesToUpdateInexistentCustomer() {
 
-        var cpf = "51430203609";
+        var cpf = "73123425827";
 
         var request = new UpdateCustomerRequest("Aislan");
 
@@ -309,7 +268,7 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
     @DisplayName("Should return 404 if user tries to delete a inexistent customer")
     void shouldReturn404IfUserTriesToDeleteInexistentCustomer() {
 
-        var cpf = "51430203609";
+        var cpf = "73123425827";
 
         given()
                 .contentType("application/json")
@@ -338,5 +297,17 @@ class CustomerControllerTest extends BaseApiIntegrationTest {
                 .then()
                 .log().ifValidationFails(LogDetail.BODY)
                 .statusCode(400);
+    }
+
+    private CreateCustomerRequest createCustomer(String name, String cpf) {
+        var request = new CreateCustomerRequest(name,cpf);
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .post("/api/v1/customers");
+        return request;
     }
 }

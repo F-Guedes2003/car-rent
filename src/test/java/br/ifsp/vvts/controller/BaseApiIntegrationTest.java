@@ -5,7 +5,6 @@ import br.ifsp.vvts.security.auth.AuthRequest;
 import br.ifsp.vvts.security.auth.AuthResponse;
 import br.ifsp.vvts.security.user.JpaUserRepository;
 import br.ifsp.vvts.security.user.User;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
@@ -46,6 +45,6 @@ public class BaseApiIntegrationTest {
         RestTemplate restTemplate = new RestTemplate();
         AuthRequest authRequest = new AuthRequest(username, password);
         final AuthResponse response = restTemplate.postForObject(baseURI + "/api/v1/authenticate", authRequest, AuthResponse.class);
-        return response.token();
+        return Objects.requireNonNull(response).token();
     }
 }
