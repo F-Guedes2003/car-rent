@@ -160,6 +160,22 @@ class RentalControllerTest extends BaseApiIntegrationTest {
     @Tag("ApiTest")
     @Tag("IntegrationTest")
     @Test
+    @DisplayName("Should Return 404 Not Found If the Rental to delete is inexistent")
+    void shouldReturn404NotFoundIfRentalIsInexistent() {
+
+        given()
+                .contentType("application/json")
+                .port(port)
+                .header("Authorization", "Bearer " + token)
+                .when().delete("/api/v1/rentals/1")
+                .then()
+                .log().ifValidationFails(LogDetail.BODY)
+                .statusCode(404);
+    }
+
+    @Tag("ApiTest")
+    @Tag("IntegrationTest")
+    @Test
     @DisplayName("Should Return 400 Bad Request If Period Is Invalid")
     void shouldReturn400BadRequestIfPeriodIsInvalid() {
 
