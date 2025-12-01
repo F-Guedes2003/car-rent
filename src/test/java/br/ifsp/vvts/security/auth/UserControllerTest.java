@@ -33,11 +33,6 @@ class UserControllerTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @BeforeAll
-    static void setupRestAssured() {
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
-
     @BeforeEach
     void setup() {
         RestAssured.port = port;
