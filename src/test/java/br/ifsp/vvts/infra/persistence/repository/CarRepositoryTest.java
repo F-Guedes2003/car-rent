@@ -11,6 +11,7 @@ import br.ifsp.vvts.security.user.Role;
 import br.ifsp.vvts.security.user.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,6 +38,8 @@ class CarRepositoryTest {
     }
 
     @Test
+    @Tag("PersistenceTest")
+    @Tag("IntegrationTest")
     @DisplayName("Should return the car with provided license plate when it is present")
     public void shouldReturnCarWithTheProvidedLicensePlate() {
         LicensePlate licensePlate = LicensePlate.of("ABC1234");
@@ -56,6 +59,8 @@ class CarRepositoryTest {
     }
 
     @Test
+    @Tag("PersistenceTest")
+    @Tag("IntegrationTest")
     @DisplayName("Should return an empty optional if the car does not exists on database")
     public void shouldReturnEmptyIfThereIsNoCarWithTheProvidedLicensePlate() {
         LicensePlate licensePlate = LicensePlate.of("ABC1234");
@@ -76,6 +81,8 @@ class CarRepositoryTest {
     }
 
     @Test
+    @Tag("PersistenceTest")
+    @Tag("IntegrationTest")
     @DisplayName("Should not allow creating two cars with the same license plate")
     public void shouldNotAllowDuplicatedLicensePlate() {
         var plate = LicensePlate.of("ABC1234");
@@ -102,6 +109,8 @@ class CarRepositoryTest {
     }
 
     @Test
+    @Tag("PersistenceTest")
+    @Tag("IntegrationTest")
     @DisplayName("Should not allow to persist a customer with a null cpf")
     public void shouldNotAllowNullCpf() {
         var carEntity = new CarEntity(

@@ -13,6 +13,7 @@ import br.ifsp.vvts.infra.persistence.mapper.CarMapper;
 import br.ifsp.vvts.infra.persistence.mapper.CustomerMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +79,8 @@ class RentalRepositoryTest {
     }
 
     @Test
+    @Tag("PersistenceTest")
+    @Tag("IntegrationTest")
     @DisplayName("licence plate existent, active and between the overlap should return true")
     void EveryConditionsAreTrue() {
 
@@ -100,6 +103,8 @@ class RentalRepositoryTest {
     }
 
     @Test
+    @Tag("PersistenceTest")
+    @Tag("IntegrationTest")
     @DisplayName("different license plate should return false(the rest of the conditions is right)")
     void LicensePlateIsNotPresent() {
 
@@ -122,6 +127,8 @@ class RentalRepositoryTest {
     }
 
     @Test
+    @Tag("PersistenceTest")
+    @Tag("IntegrationTest")
     @DisplayName("Status is inactive should return false(everything else is true)")
     void inactiveStatusShouldReturnFalse() {
 
@@ -145,6 +152,8 @@ class RentalRepositoryTest {
     }
 
     @Test
+    @Tag("PersistenceTest")
+    @Tag("IntegrationTest")
     @DisplayName("No rentals on the provided overlap should return false")
     void NoRentalsOnOverlapShouldReturnFalse() {
 

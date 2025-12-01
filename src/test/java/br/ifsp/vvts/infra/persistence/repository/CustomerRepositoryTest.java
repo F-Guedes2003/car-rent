@@ -14,6 +14,7 @@ import br.ifsp.vvts.security.user.Role;
 import br.ifsp.vvts.security.user.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,6 +41,8 @@ class CustomerRepositoryTest {
     }
 
     @Test
+    @Tag("PersistenceTest")
+    @Tag("IntegrationTest")
     @DisplayName("Should return the customer of the provided CPF when it is present")
     public void shouldReturnCustomerWithTheProvidedCpf() {
         var cpf = CPF.of("12345678909");
@@ -54,6 +57,8 @@ class CustomerRepositoryTest {
     }
 
     @Test
+    @Tag("PersistenceTest")
+    @Tag("IntegrationTest")
     @DisplayName("Should return an empty optional of the provided CPF when it is present")
     public void shouldReturnAnEmptyOptional() {
         var cpf = CPF.of("12345678909");
@@ -68,6 +73,8 @@ class CustomerRepositoryTest {
     }
 
     @Test
+    @Tag("PersistenceTest")
+    @Tag("IntegrationTest")
     @DisplayName("Should not allow creating users with the same cpf")
     public void shouldNotAllowDuplicatedCpf() {
         var cpf = CPF.of("12345678909");
@@ -85,6 +92,8 @@ class CustomerRepositoryTest {
     }
 
     @Test
+    @Tag("PersistenceTest")
+    @Tag("IntegrationTest")
     @DisplayName("Should not allow to persist a customer with a null cpf")
     public void shouldNotAllowNullCpf() {
         var customerEntity = new CustomerEntity(null, "John Doe", null);
